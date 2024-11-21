@@ -205,7 +205,7 @@ const getAllProduct = async (req, res) => {
   
     try {
       const subcategory = await prisma.subcategory.findMany({
-        where: { categories_id: categoryId },
+        where: { category_id: categoryId },
       });
       res.json({ data: subcategory });
     } catch (error) {

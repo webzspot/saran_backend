@@ -26,6 +26,9 @@ router.get("/product", getAllProduct);
 router.get("/product/:id", getProductById);
   
 router.get("/category", getCategory); 
+
+
+
   // Fetch subcategories based on selected category
 router.get("/subcategory", getSubCategory);
   // Get all categories
