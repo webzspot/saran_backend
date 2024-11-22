@@ -35,7 +35,7 @@ router.get("/subcategory", getSubCategory);
   // Get subcategories based on category ID
 router.get("/subcategory/:categoryId", getSubCategoryByCategoryId);
   // Get products based on subcategory ID
-router.get("/product/:subcategoryId", getProductBySubCategoryId);
+router.get("/paticularproduct/:subcategoryId", getProductBySubCategoryId);
   
 router.get('/review/:product_id',getReviewByProductId);
   
