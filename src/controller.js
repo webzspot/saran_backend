@@ -123,7 +123,7 @@ const getAllProduct = async (req, res) => {
   
     try {
       // Delete the product, which will also delete the associated Productdescription
-      const deletedProduct = await prisma.product.delete({
+      const deletedProduct = await prisma.subcategory.delete({
         where: { subcategory_id: subcategoryId }
       });
   
@@ -145,7 +145,7 @@ const getAllProduct = async (req, res) => {
   
     try {
       // Delete the product, which will also delete the associated Productdescription
-      const deletedProductVariationById = await prisma.product.delete({
+      const deletedProductVariationById = await prisma.productVariation.delete({
         where: { productVariation_id: productVariationId }
       });
   
