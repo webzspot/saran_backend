@@ -3,7 +3,7 @@ const router = express.Router()
 const {postCategory, postSubCategory, postProduct, getAllProduct, deleteProductById,
      getProductById, getCategory, getSubCategory, getSubCategoryByCategoryId,
      getProductBySubCategoryId, postReview, getReviewByProductId,
-     updateReviewApproveById,
+     updateReviewApproveById,deleteSubcategoryById,deleteProductVariationById,
      postProductVariations} = require("./controller")
 
 
@@ -19,7 +19,11 @@ router.put("/review/approve/:id",updateReviewApproveById );
   
 router.post('/product-variations',postProductVariations );
 
+router.delete('/product-variations/:id', deleteProductVariationById );
+
 router.delete("/product/:id", deleteProductById);
+
+router.delete("/subcategory/:id", deleteSubcategoryById);
 
 router.get("/product", getAllProduct); 
   

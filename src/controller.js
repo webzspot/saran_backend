@@ -118,6 +118,50 @@ const getAllProduct = async (req, res) => {
     }
   }
 
+  const deleteSubcategoryById = async (req, res) => {
+    const subcategoryId = req.params.id;
+  
+    try {
+      // Delete the product, which will also delete the associated Productdescription
+      const deletedProduct = await prisma.product.delete({
+        where: { subcategory_id: subcategoryId }
+      });
+  
+      res.json({
+        message: "Product and associated description deleted successfully",
+        data: deletedProduct
+      });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.json({
+        message: "An error occurred while deleting the product",
+        error: error.message
+      });
+    }
+  }
+
+  const deleteProductVariationById  = async (req, res) => {
+    const productVariationId = req.params.id;
+  
+    try {
+      // Delete the product, which will also delete the associated Productdescription
+      const deletedProductVariationById = await prisma.product.delete({
+        where: { productVariation_id: productVariationId }
+      });
+  
+      res.json({
+        message: "Product and associated description deleted successfully",
+        data: deletedProductVariationById
+      });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.json({
+        message: "An error occurred while deleting the product",
+        error: error.message
+      });
+    }
+  }
+
   const getProductById =  async (req, res) => {
     try {
       const data = req.params;
@@ -346,8 +390,8 @@ const getAllProduct = async (req, res) => {
     }
   }
 
-module.exports = {postCategory,postSubCategory,
-    postProduct,getAllProduct,deleteProductById,
+module.exports = {postCategory,postSubCategory,deleteSubcategoryById,
+    postProduct,getAllProduct,deleteProductById,deleteProductVariationById,
     getProductById,getCategory,getSubCategory,
     getSubCategoryByCategoryId,getProductBySubCategoryId,
     postReview,getReviewByProductId,updateReviewApproveById,postProductVariations}
