@@ -18,7 +18,7 @@ model Subcategory {
   subcategory_id   String    @id @unique @default(cuid())
   subcategory_name String
   category_id      String
-  category         Category  @relation(fields: [category_id], references: [category_id])
+  category         Category  @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
   product          Product[]
 }
 
