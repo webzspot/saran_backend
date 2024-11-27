@@ -432,14 +432,14 @@ const getSession = async (req, res) => {
     try {
         const getSession = await prisma.session.findMany();
 
-        res.status(200).json({
+        res.json({
             data: {
                 getSession,
             },
         });
     } catch (error) {
         console.error("Error fetching sessions:", error);
-        res.status(500).json({
+        res.json({
             message: "An error occurred while fetching the sessions",
             error: error.message,
         });
