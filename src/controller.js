@@ -438,7 +438,6 @@ const getSession = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Error fetching sessions:", error);
         res.json({
             message: "An error occurred while fetching the sessions",
             error: error.message,
