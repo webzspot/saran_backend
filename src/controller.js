@@ -430,11 +430,11 @@ const postSession = async (req, res) => {
 
 const getSession = async (req, res) => {
     try {
-        const getSession = await prisma.session.findMany();
+        const sessions = await prisma.session.findMany();
 
         res.json({
             data: {
-                getSession,
+                sessions,
             },
         });
     } catch (error) {
