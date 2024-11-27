@@ -58,3 +58,43 @@ model Review {
   product Product @relation(fields:[product_id],references:[product_id], onDelete: Cascade)
 }
 
+
+model Session {
+  session_id         String              @id @default(cuid())
+  session_image      String
+  session_name       String
+  session_mode       String
+  price              String
+  description        String
+  date               String
+  time               String
+  session_platform   String
+  session_kit        String
+  sessiondescription Sessiondescription?
+  Reviewsession             Reviewsession[]
+}
+
+model Sessiondescription {
+  description_id   String  @id @default(cuid())
+  language         String
+  kit_info         String
+  learn1           String
+  learn2           String
+  learn3           String
+  other_benefits_1 String
+  other_benefits_2 String
+  other_benefits_3 String
+  session_id       String  @unique
+  session          Session @relation(fields: [session_id], references: [session_id], onDelete:Cascade)
+}
+
+model Reviewsession {
+  reviewsession_id  String   @id @unique @default(cuid())
+  reviewer   String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+  isApproved Boolean  @default(false)
+  session_id String
+  session    Session  @relation(fields: [session_id], references: [session_id], onDelete: Cascade)
+}

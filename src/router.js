@@ -5,7 +5,12 @@ const {postCategory, postSubCategory, postProduct, getAllProduct, deleteProductB
      getProductById, getCategory, getSubCategory, getSubCategoryByCategoryId,
      getProductBySubCategoryId, postReview, getReviewByProductId,
      updateReviewApproveById,deleteSubcategoryById,deleteProductVariationById,
-     postProductVariations,getProductVariations} = require("./controller")
+     postProductVariations,getProductVariations,
+     postSession,getSession,postSessionDescription,
+     getSessionById,
+     postReviewSession,
+     getReviewSession,
+     updateReviewSession} = require("./controller")
 
 
 router.post("/category", postCategory);
@@ -45,5 +50,20 @@ router.get("/paticularproduct/:subcategoryId", getProductBySubCategoryId);
 router.get('/review/:product_id',getReviewByProductId);
   
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+router.post('/session',postSession)
+router.get('/session',getSession)
+router.post('/session-description',postSessionDescription)
+router.get('/session/:id',getSessionById)
+
+// POST route to create a review
+router.post('/reviewsessions', postReviewSession);
+
+// GET route to fetch reviews for a session
+router.get('/reviewsessions', getReviewSession);
+
+// PUT route to update a review (approve/edit review)
+router.put('/reviewsessions/:reviewSessionId', updateReviewSession);
+
 
 module.exports = router
