@@ -404,7 +404,7 @@ const postSession = async (req, res) => {
     try {
         const data = req.body;
 
-        const postSession = await prisma.session.create({
+        const CardSession = await prisma.session.create({
             data: {
                 session_image: data.session_image,
                 session_name: data.session_name,
@@ -418,10 +418,10 @@ const postSession = async (req, res) => {
             },
         });
 
-        res.status(200).json({ data: postSession });
+        res.json({ data: CardSession });
     } catch (error) {
         console.error("Error creating session:", error);
-        res.status(500).json({
+        res.json({
             message: "An error occurred while creating the session",
             error: error.message,
         });
@@ -429,10 +429,13 @@ const postSession = async (req, res) => {
 };
 
 const getSession = async (req, res) => {
-    console.log(prisma.session); 
+    
     try {
         const sessions = await prisma.session.findMany();
 
+        if (!sessions) {
+            console.log("No sessions found.");
+          }
         res.json({
             data: {
                 sessions,
@@ -450,7 +453,7 @@ const postSessionDescription = async (req, res) => {
     try {
         const data = req.body;
 
-        const postSessionDescription = await prisma.sessiondescription.create({
+        const SessionDescription = await prisma.sessiondescription.create({
             data: {
                 language: data.language,
                 kit_info: data.kit_info,
@@ -465,7 +468,7 @@ const postSessionDescription = async (req, res) => {
         });
 
         res.status(200).json({
-            postSessionDescription,
+            SessionDescription,
         });
     } catch (error) {
         console.error("Error creating session description:", error);
@@ -480,7 +483,7 @@ const getSessionById = async (req, res) => {
     try {
         const data = req.params;
 
-        const getSessionById = await prisma.session.findUnique({
+        const paticularsection = await prisma.session.findUnique({
             where: {
                 session_id: data.id,
             },
@@ -493,7 +496,7 @@ const getSessionById = async (req, res) => {
         });
 
         res.status(200).json({
-            getSessionById,
+            paticularsection,
         });
     } catch (error) {
         console.error("Error fetching session by ID:", error);
