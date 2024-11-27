@@ -7,7 +7,6 @@ const router = require('./src/router')
 
 
 
-console.log("poda:",process.env.port)
 
 
 // console.log("Environment Variables Loaded:", process.env);
