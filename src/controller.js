@@ -432,10 +432,6 @@ const getSession = async (req, res) => {
     
     try {
         const sessions = await prisma.session.findMany();
-
-        if (!sessions) {
-            console.log("No sessions found.");
-          }
         res.json({
             data: {
                 sessions,
