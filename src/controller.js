@@ -429,6 +429,7 @@ const postSession = async (req, res) => {
 };
 
 const getSession = async (req, res) => {
+    console.log(prisma.session); 
     try {
         const sessions = await prisma.session.findMany();
 
