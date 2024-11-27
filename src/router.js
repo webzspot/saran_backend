@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
+const upload = require('./multer')
 const {postCategory, postSubCategory, postProduct, getAllProduct, deleteProductById,
      getProductById, getCategory, getSubCategory, getSubCategoryByCategoryId,
      getProductBySubCategoryId, postReview, getReviewByProductId,
      updateReviewApproveById,deleteSubcategoryById,deleteProductVariationById,
-     postProductVariations} = require("./controller")
+     postProductVariations,getProductVariations} = require("./controller")
 
 
 router.post("/category", postCategory);
@@ -17,7 +18,9 @@ router.post("/review",postReview);
 
 router.put("/review/approve/:id",updateReviewApproveById );
   
-router.post('/product-variations',postProductVariations );
+router.post('/product-variations',upload.single("file"),postProductVariations );
+
+router.get('/product-variations',getProductVariations );
 
 router.delete('/product-variations/:id', deleteProductVariationById );
 
@@ -31,8 +34,6 @@ router.get("/product/:id", getProductById);
   
 router.get("/category", getCategory); 
 
-
-
   // Fetch subcategories based on selected category
 router.get("/subcategory", getSubCategory);
   // Get all categories
@@ -43,6 +44,6 @@ router.get("/paticularproduct/:subcategoryId", getProductBySubCategoryId);
   
 router.get('/review/:product_id',getReviewByProductId);
   
-
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 module.exports = router

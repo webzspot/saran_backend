@@ -366,13 +366,14 @@ const getAllProduct = async (req, res) => {
 
   const postProductVariations = async (req, res) => {
     const data = req.body;
-    console.log(data)
+    console.log(data);
+    console.log(req.file.location); // This should log the file URL from S3
   
     try {
       const productVariation = await prisma.productVariation.create({
         data: {
-          productVariation_image: data.productVariation_image,
-          productVariation_price: data.productVariation_price,
+          productVariation_image: req.file.location, // This should be where the image URL is saved
+          productVariation_price: data.productVariation_price, // Assuming price is from the form data
           description: data.description,
           theme: data.theme,
           size: data.size,
@@ -380,18 +381,27 @@ const getAllProduct = async (req, res) => {
           delivery_details: data.delivery_details,
           about: data.about,
           requirements: data.requirements,
-          product_id:data.product_id
+          product_id: data.product_id
         },
       });
-      console.log(productVariation)
+      console.log(productVariation);
       res.json(productVariation);
     } catch (error) {
       res.status(400).json({ error: "Could not create product variation", details: error.message });
     }
-  }
+  };
+  const getProductVariations = async (req, res) => {
+    try {
+      const productVariation = await prisma.productVariation.findMany();
+      res.json(productVariation);
+    } catch (error) {
+      res.status(400).json({ error: "Could not create product variation", details: error.message });
+    }
+  };
+  
 
 module.exports = {postCategory,postSubCategory,deleteSubcategoryById,
     postProduct,getAllProduct,deleteProductById,deleteProductVariationById,
     getProductById,getCategory,getSubCategory,
     getSubCategoryByCategoryId,getProductBySubCategoryId,
-    postReview,getReviewByProductId,updateReviewApproveById,postProductVariations}
+    postReview,getReviewByProductId,updateReviewApproveById,postProductVariations,getProductVariations}
