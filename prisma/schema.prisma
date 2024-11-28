@@ -8,6 +8,21 @@ generator client {
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
+model User {
+    user_id         String @id @unique @default(cuid())
+    userName        String
+    email           String @unique
+    phoneNumber     String
+    password        String
+    otp             String?
+   otpExpiry        DateTime? 
+}
+
+model Token {
+    token_id        String @id @unique @default(cuid())
+    refreshToken    String
+}
+
 model Category {
   category_id   String        @id @unique @default(cuid())
   category_name String
