@@ -122,6 +122,8 @@ const authVerifyOtp = async (req, res) => {
     res.json({ message: "Password successfully reset" });
 }
 
+
+
 const authRegister = async (req, res) => {
     const data = req.body
     const existingUser = await prisma.user.findUnique({
