@@ -86,8 +86,8 @@ router.post('/verify-otp', authVerifyOtp)
 router.post("/order-product",postProductOrder)
 router.post("/verify-product",postProductVerify)
 
-router.post("/order-session",postSessionOrder)
-router.post("/verify-session",postSessionVerify)
+// router.post("/order-session",postSessionOrder)
+// router.post("/verify-session",postSessionVerify)
 
 
 
