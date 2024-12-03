@@ -150,7 +150,7 @@ model PermanentOrder {
   name             String
   email            String
   phoneNumber      String
-  adress1          String
+  address1          String
   address2         String
   landmark         String
   city             String
