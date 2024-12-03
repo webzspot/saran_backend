@@ -7,14 +7,14 @@ require('dotenv').config();
 // const keySecret = process.env.KEY_SECRET;
 // console.log(`Key ID: ${keyId}`);
 // console.log(`Key Secret: ${keySecret}`);
-// const razorpay = new Razorpay({
-//     key_id: "rzp_test_qUePsQvwKUdYCu",
-//     key_secret: "zncIffQV4BBNSDBpfS2IKBy7",
-//   });
 const razorpay = new Razorpay({
-    key_id: process.env.KEY_ID,
-    key_secret: process.env.KEY_SECRET,
+    key_id: "rzp_test_qUePsQvwKUdYCu",
+    key_secret: "zncIffQV4BBNSDBpfS2IKBy7",
   });
+// const razorpay = new Razorpay({
+//     key_id: process.env.KEY_ID,
+//     key_secret: process.env.KEY_SECRET,
+//   });
 
 const postProductOrder = async (req, res) => {
     try {
