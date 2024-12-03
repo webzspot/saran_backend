@@ -1,27 +1,19 @@
 const Razorpay = require("razorpay");
 const { validatePaymentVerification } = require("razorpay/dist/utils/razorpay-utils");
-const prisma = require("../prisma")
+const prisma = require("../prisma");
 require('dotenv').config();
 
-// const keyId = process.env.KEY_ID;
-// const keySecret = process.env.KEY_SECRET;
-// console.log(`Key ID: ${keyId}`);
-// console.log(`Key Secret: ${keySecret}`);
 const razorpay = new Razorpay({
     key_id: "rzp_test_qUePsQvwKUdYCu",
     key_secret: "zncIffQV4BBNSDBpfS2IKBy7",
-  });
-// const razorpay = new Razorpay({
-//     key_id: process.env.KEY_ID,
-//     key_secret: process.env.KEY_SECRET,
-//   });
+});
 
 const postProductOrder = async (req, res) => {
     try {
         const data = req.body;
 
         const order = await razorpay.orders.create({
-           totalPrice: data.totalPrice * 100, // Amount in paise
+            amount: data.totalPrice * 100, // Amount in paise
             currency: "INR",
         });
 
@@ -30,11 +22,11 @@ const postProductOrder = async (req, res) => {
             data: {
                 order_id: order.id,
                 subcategoryName: data.subcategoryName,
-                productName:data.productName,
-                size:data.size,
-                price:data.price,
-                shipping_charges:data.shipping_charges,
-                totalPrice:(totalPrice / 100).toString(),
+                productName: data.productName,
+                size: data.size,
+                price: data.price,
+                shipping_charges: data.shipping_charges,
+                totalPrice: (data.totalPrice / 100).toString(),
                 name: data.name,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
@@ -50,18 +42,13 @@ const postProductOrder = async (req, res) => {
 
         res.status(200).json({ order });
     } catch (error) {
-        try {
-            console.error("Error creating order:", error);
-            res.status(500).json({ error: "Internal server error" });
-        } catch (catchError) {
-            console.error("Error handling the create order error:", catchError);
-            res.status(500).json({ error: "Critical error occurred" });
-        }
+        console.error("Error creating order:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Route to verify payment
-const postProductVerify =  async (req, res) => {
+const postProductVerify = async (req, res) => {
     try {
         const data = req.body;
         const secret = process.env.KEY_SECRET;
@@ -74,7 +61,7 @@ const postProductVerify =  async (req, res) => {
 
         if (isVerified) {
             const orderDetails = await prisma.temporaryOrder.findUnique({
-                where: { order_id: razorpayOrderId },
+                where: { order_id: data.razorpayOrderId },
             });
 
             if (!orderDetails) {
@@ -96,12 +83,12 @@ const postProductVerify =  async (req, res) => {
                     city: orderDetails.city,
                     state: orderDetails.state,
                     pincode: orderDetails.pincode,
-                    amount: orderDetails.amount,
-                    productName:orderDetails.productName,
-                    size:orderDetails.size,
-                    price:orderDetails.price,
-                    shipping_charges:orderDetails.shipping_charges,
-                    totalPrice:orderDetails.totalPrice 
+                    amount: orderDetails.totalPrice, // Assuming totalPrice is equivalent to amount
+                    productName: orderDetails.productName,
+                    size: orderDetails.size,
+                    price: orderDetails.price,
+                    shipping_charges: orderDetails.shipping_charges,
+                    totalPrice: orderDetails.totalPrice,
                 },
             });
 
@@ -114,14 +101,9 @@ const postProductVerify =  async (req, res) => {
             res.status(400).json({ error: "Payment verification failed" });
         }
     } catch (error) {
-        try {
-            console.error("Error verifying payment:", error);
-            res.status(500).json({ error: "Internal server error" });
-        } catch (catchError) {
-            console.error("Error handling the verification error:", catchError);
-            res.status(500).json({ error: "Critical error occurred" });
-        }
+        console.error("Error verifying payment:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
-module.exports = {postProductOrder,postProductVerify}
+module.exports = { postProductOrder, postProductVerify };
