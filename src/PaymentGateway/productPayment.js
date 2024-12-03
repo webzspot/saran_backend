@@ -72,8 +72,13 @@ const postProductVerify = async (req, res) => {
             await prisma.permanentOrder.create({
                 data: {
                     order_id: orderDetails.order_id,
-                    subcategoryName: orderDetails.subcategoryName,
                     payment_id: data.razorpayPaymentId,
+                    subcategoryName: orderDetails.subcategoryName,
+                    productName: orderDetails.productName,
+                    size: orderDetails.size,
+                    price: orderDetails.price,
+                    shipping_charges: orderDetails.shipping_charges,
+                    totalPrice: orderDetails.totalPrice,
                     name: orderDetails.name,
                     email: orderDetails.email,
                     phoneNumber: orderDetails.phoneNumber,
@@ -83,12 +88,6 @@ const postProductVerify = async (req, res) => {
                     city: orderDetails.city,
                     state: orderDetails.state,
                     pincode: orderDetails.pincode,
-                    amount: orderDetails.totalPrice, // Assuming totalPrice is equivalent to amount
-                    productName: orderDetails.productName,
-                    size: orderDetails.size,
-                    price: orderDetails.price,
-                    shipping_charges: orderDetails.shipping_charges,
-                    totalPrice: orderDetails.totalPrice,
                 },
             });
 
