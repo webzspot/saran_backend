@@ -51,7 +51,7 @@ const postProductOrder = async (req, res) => {
 const postProductVerify = async (req, res) => {
     try {
         const data = req.body;
-        const secret = process.env.KEY_SECRET;
+        const secret = "zncIffQV4BBNSDBpfS2IKBy7";
 
         const isVerified = validatePaymentVerification(
             { order_id: data.razorpayOrderId, payment_id: data.razorpayPaymentId },
