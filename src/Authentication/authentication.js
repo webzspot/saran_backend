@@ -288,7 +288,7 @@ const authRefresh = async (req, res) => {
         jwt.verify(tokenValid.refreshToken, 'saranya_project', function (err) {
             if (!err) {
                 var accessToken = jwt.sign({ user_id: tokenValid.user_id }, "saranya_project", {
-                    expiresIn: "60s"
+                    expiresIn: "10s"
                 })
                 res.json({
                     accessToken: accessToken

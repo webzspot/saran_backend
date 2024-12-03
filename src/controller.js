@@ -365,8 +365,8 @@ const updateReviewApproveById = async (req, res) => {
 
 const postProductVariations = async (req, res) => {
     const data = req.body;
-    console.log(data);
-    console.log(req.file.location); // This should log the file URL from S3
+    // console.log(data);
+    // console.log(req.file.location); // This should log the file URL from S3
 
     try {
         const productVariation = await prisma.productVariation.create({
@@ -399,6 +399,18 @@ const getProductVariations = async (req, res) => {
     }
 };
 
+const getReview = async(req,res) =>{
+    try {
+        const review = await prisma.review.findMany();
+        res.json(review);
+    } catch (error) {
+        res.status(400).json({ error: "Could not create product variation", details: error.message });
+    }
+}
+
+
+
+
 
 
 module.exports = {
@@ -406,6 +418,6 @@ module.exports = {
     postProduct, getAllProduct, deleteProductById, deleteProductVariationById,
     getProductById, getCategory, getSubCategory,
     getSubCategoryByCategoryId, getProductBySubCategoryId,
-    postReview, getReviewByProductId, updateReviewApproveById, postProductVariations, getProductVariations
+    postReview, getReviewByProductId, updateReviewApproveById, postProductVariations, getProductVariations,getReview
     
 }

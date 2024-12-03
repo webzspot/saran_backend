@@ -7,7 +7,7 @@ const postSession = async (req, res) => {
 
         const CardSession = await prisma.session.create({
             data: {
-                session_image: data.session_image,
+                session_image: req.file.location,
                 session_name: data.session_name,
                 session_mode: data.session_mode,
                 price: data.price,
@@ -214,32 +214,33 @@ const postReviewSession = async (req, res) => {
 
 const sessionUpdate = async (req, res) => {
     try {
-        const { session_id, session_name, session_mode, price, description, date, time, session_platform, session_kit, sessiondescription } = req.body;
+        const data = req.body;
 
         // Update session and related session description
         const sessionUpdate = await prisma.session.update({
             where: {
-                session_id, // Unique identifier for the session
+                session_id:data.session_id, // Unique identifier for the session
             },
             data: {
-                session_name,
-                session_mode,
-                price,
-                description,
-                date,
-                time,
-                session_platform,
-                session_kit,
+                session_image: req.file.location,
+                session_name: data.session_name,
+                session_mode: data.session_mode,
+                price: data.price,
+                description: data.description,
+                date: data.date,
+                time: data.time,
+                session_platform: data.session_platform,
+                session_kit: data.session_kit,
                 sessiondescription: {
                     update: {
-                        language: sessiondescription.language,
-                        kit_info: sessiondescription.kit_info,
-                        learn1: sessiondescription.learn1,
-                        learn2: sessiondescription.learn2,
-                        learn3: sessiondescription.learn3,
-                        other_benefits_1: sessiondescription.other_benefits_1,
-                        other_benefits_2: sessiondescription.other_benefits_2,
-                        other_benefits_3: sessiondescription.other_benefits_3,
+                        language: data.sessiondescription.language,
+                        kit_info: data.sessiondescription.kit_info,
+                        learn1: data.sessiondescription.learn1,
+                        learn2: data.sessiondescription.learn2,
+                        learn3: data.sessiondescription.learn3,
+                        other_benefits_1: data.sessiondescription.other_benefits_1,
+                        other_benefits_2: data.sessiondescription.other_benefits_2,
+                        other_benefits_3: data.sessiondescription.other_benefits_3,
                     },
                 },
             },

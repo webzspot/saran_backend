@@ -6,11 +6,14 @@ const { postCategory, postSubCategory, postProduct, getAllProduct, deleteProduct
     getProductBySubCategoryId, postReview, getReviewByProductId,
     updateReviewApproveById, deleteSubcategoryById, deleteProductVariationById,
     postProductVariations, getProductVariations,
+    getReview,
 } = require("./controller")
 const { postSession, getSession, postSessionDescription, getSessionById, postReviewSession, getReviewSession, updateReviewSession,
     sessionDelete, sessionUpdate } = require("../src/Session-package/session")
-const productedRoute = require('./Authentication/protectedRoute')
+const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
+const {postProductOrder,postProductVerify} = require('./PaymentGateway/productPayment')
+const {postSessionOrder,postSessionVerify} =  require('./PaymentGateway/sessionPayment')
 
 
 router.post("/category", postCategory);
@@ -23,13 +26,13 @@ router.post("/review", postReview);
 
 router.put("/review/approve/:id", updateReviewApproveById);
 
-router.post('/product-variations', upload.single("file"), postProductVariations);
+router.post('/product-variations',  postProductVariations);
 
-router.get('/product-variations', getProductVariations);
+router.get('/product-variations',  getProductVariations);
 
-router.delete('/product-variations/:id', deleteProductVariationById);
+router.delete('/product-variations/:id',deleteProductVariationById);
 
-router.delete("/product/:id", deleteProductById);
+router.delete("/product/:id",deleteProductById);
 
 router.delete("/subcategory/:id", deleteSubcategoryById);
 
@@ -48,10 +51,11 @@ router.get("/subcategory/:categoryId", getSubCategoryByCategoryId);
 router.get("/paticularproduct/:subcategoryId", getProductBySubCategoryId);
 
 router.get('/review/:product_id', getReviewByProductId);
+router.get('/review', getReview);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-router.post('/session', postSession)
+router.post('/session',upload.single("file"), postSession)
 router.get('/session', getSession)
 router.post('/session-description', postSessionDescription)
 router.get('/session/:id', getSessionById)
@@ -67,13 +71,24 @@ router.put('/reviewsessions/:reviewSessionId', updateReviewSession);
 
 router.delete('/session/:id', sessionDelete)
 
-router.put('/session/:id', sessionUpdate)
+router.put('/session/:id', upload.single("file"),sessionUpdate)
 
 router.post('/refresh', authRefresh)
 router.post('/login', authLogin)
 router.post('/register', authRegister)
 router.post('/forgot-password', authForgetPassword)
 router.post('/verify-otp', authVerifyOtp)
+
+
+
+// payment route for product
+
+router.post("/order-product",postProductOrder)
+router.post("/verify-product",postProductVerify)
+
+router.post("/order-session",postSessionOrder)
+router.post("/verify-session",postSessionVerify)
+
 
 
 
