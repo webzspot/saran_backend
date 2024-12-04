@@ -11,6 +11,7 @@ const razorpay = new Razorpay({
 const postProductOrder = async (req, res) => {
     try {
         const data = req.body;
+        const filePaths = req.files.map((file) => file.location);
 
         const order = await razorpay.orders.create({
             amount: data.totalPrice * 100, // Amount in paise
@@ -36,6 +37,7 @@ const postProductOrder = async (req, res) => {
                 city: data.city,
                 state: data.state,
                 pincode: data.pincode,
+                photo:filePaths,
                 expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
             },
         });
@@ -88,6 +90,7 @@ const postProductVerify = async (req, res) => {
                     city: orderDetails.city,
                     state: orderDetails.state,
                     pincode: orderDetails.pincode,
+                    photo:orderDetails,photo
                 },
             });
 

@@ -55,7 +55,7 @@ router.get('/review', getReview);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-router.post('/session',upload.single("file"), postSession)
+router.post('/session',upload.single('session_image'), postSession)
 router.get('/session', getSession)
 router.post('/session-description', postSessionDescription)
 router.get('/session/:id', getSessionById)
@@ -83,7 +83,7 @@ router.post('/verify-otp', authVerifyOtp)
 
 // payment route for product
 
-router.post("/order-product",postProductOrder)
+router.post("/order-product",upload.array('photo', 8),postProductOrder)
 router.post("/verify-product",postProductVerify)
 
 // router.post("/order-session",postSessionOrder)

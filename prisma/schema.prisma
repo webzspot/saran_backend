@@ -133,6 +133,7 @@ model TemporaryOrder {
   city             String
   state            String
   pincode          String
+  photo            String[]
   createdAt        DateTime @default(now())
   expiresAt        DateTime
 }
@@ -156,5 +157,6 @@ model PermanentOrder {
   city             String
   state            String
   pincode          String
+  photo            String[]
   createdAt        DateTime @default(now())
 }

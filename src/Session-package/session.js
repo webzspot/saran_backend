@@ -29,23 +29,6 @@ const postSession = async (req, res) => {
     }
 };
 
-const getSession = async (req, res) => {
-    
-    try {
-        const sessions = await prisma.session.findMany();
-        res.json({
-            data: {
-                sessions,
-            },
-        });
-    } catch (error) {
-        res.json({
-            message: "An error occurred while fetching the sessions",
-            error: error.message,
-        });
-    }
-};
-
 const postSessionDescription = async (req, res) => {
     try {
         const data = req.body;
@@ -75,6 +58,25 @@ const postSessionDescription = async (req, res) => {
         });
     }
 };
+
+const getSession = async (req, res) => {
+    
+    try {
+        const sessions = await prisma.session.findMany();
+        res.json({
+            data: {
+                sessions,
+            },
+        });
+    } catch (error) {
+        res.json({
+            message: "An error occurred while fetching the sessions",
+            error: error.message,
+        });
+    }
+};
+
+
 
 const getSessionById = async (req, res) => {
     try {
