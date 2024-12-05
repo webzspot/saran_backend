@@ -6,10 +6,10 @@ const { postCategory, postSubCategory, postProduct, getAllProduct, deleteProduct
     getProductBySubCategoryId, postReview, getReviewByProductId,
     updateReviewApproveById, deleteSubcategoryById, deleteProductVariationById,
     postProductVariations, getProductVariations,
-    getReview,
+    getReview,deleteReviewById,
 } = require("./controller")
 const { postSession, getSession, postSessionDescription, getSessionById, postReviewSession, getReviewSession, updateReviewSession,
-    sessionDelete, sessionUpdate } = require("../src/Session-package/session")
+    deleteReviewSession,sessionDelete, sessionUpdate } = require("../src/Session-package/session")
 const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
 const {postProductOrder,postProductVerify} = require('./PaymentGateway/productPayment')
@@ -24,7 +24,7 @@ router.post("/product", postProduct);
 
 router.post("/review", postReview);
 
-router.put("/review/approve/:id", updateReviewApproveById);
+router.put("/review/:id", updateReviewApproveById);
 
 router.post('/product-variations',  postProductVariations);
 
@@ -52,6 +52,7 @@ router.get("/paticularproduct/:subcategoryId", getProductBySubCategoryId);
 
 router.get('/review/:product_id', getReviewByProductId);
 router.get('/review', getReview);
+router.delete('/review/:id', deleteReviewById);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -68,6 +69,7 @@ router.get('/reviewsessions', getReviewSession);
 
 // PUT route to update a review (approve/edit review)
 router.put('/reviewsessions/:reviewSessionId', updateReviewSession);
+router.delete('/reviewsessions/:reviewSessionId', deleteReviewSession);
 
 router.delete('/session/:id', sessionDelete)
 

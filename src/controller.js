@@ -117,6 +117,29 @@ const deleteProductById = async (req, res) => {
     }
 }
 
+const deleteReviewById = async (req, res) => {
+    const reviewId = req.params.id;  // Assuming you are passing the review ID in the request
+
+    try {
+        // Delete the review by its ID
+        const deletedReview = await prisma.review.delete({
+            where: { review_id: reviewId }
+        });
+
+        res.json({
+            message: "Review deleted successfully",
+            data: deletedReview
+        });
+    } catch (error) {
+        console.error("Error deleting review:", error);
+        res.json({
+            message: "An error occurred while deleting the review",
+            error: error.message
+        });
+    }
+};
+
+
 const deleteSubcategoryById = async (req, res) => {
     const subcategoryId = req.params.id;
 
@@ -419,5 +442,5 @@ module.exports = {
     getProductById, getCategory, getSubCategory,
     getSubCategoryByCategoryId, getProductBySubCategoryId,
     postReview, getReviewByProductId, updateReviewApproveById, postProductVariations, getProductVariations,getReview
-    
+    ,deleteReviewById
 }

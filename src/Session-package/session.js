@@ -152,6 +152,30 @@ const postReviewSession = async (req, res) => {
       });
     }
   };
+  const deleteReviewSession = async (req, res) => {
+    
+    try {
+        const { reviewSessionId } = req.params;
+        
+      // Fetch reviews for the specified session and only return approved reviews
+      const deletereviews = await prisma.reviewsession.delete({
+        where:{
+            reviewsession_id:reviewSessionId
+        }
+      });
+  
+      res.status(200).json({
+        message: "Review session deleted successfully.",
+        data: deletereviews,
+      });
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({
+        message: "An error occurred while fetching reviews",
+        error: error.message,
+      });
+    }
+  };
   
   // UPDATE: Approve or edit a review
   const updateReviewSession = async (req, res) => {
@@ -264,5 +288,5 @@ const sessionUpdate = async (req, res) => {
     }
 };
 
-module.exports = {postSession,getSession,postSessionDescription,
-    getSessionById,postReviewSession,getReviewSession,updateReviewSession,sessionDelete,sessionUpdate}
+module.exports = {postSession,getSession,postSessionDescription,deleteReviewSession
+    ,getSessionById,postReviewSession,getReviewSession,updateReviewSession,sessionDelete,sessionUpdate}
