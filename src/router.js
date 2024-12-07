@@ -26,7 +26,7 @@ router.post("/review", postReview);
 
 router.put("/review/:id", updateReviewApproveById);
 
-router.post('/product-variations', upload.single('session_image'), postProductVariations);
+router.post('/product-variations', upload.single('productVariation_image'), postProductVariations);
 
 router.get('/product-variations',  getProductVariations);
 
