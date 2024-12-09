@@ -402,7 +402,9 @@ const postProductVariations = async (req, res) => {
                 shipping_charges: data.shipping_charges,
                 delivery_details: data.delivery_details,
                 about: data.about,
-                requirements: JSON.parse(data.requirements),
+                requirements1: data.requirements1,
+                requirements2: data.requirements2,
+                requirements3: data.requirements3,
                 product_id: data.product_id
             },
         });
