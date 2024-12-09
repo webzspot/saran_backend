@@ -11,7 +11,7 @@ const postContact = async (req, res) => {
         service: 'gmail', // Replace with your email service (e.g., Gmail, Outlook)
         auth: {
             user: 'sarancastle.com', // Your email address
-            pass: 'ygwk worm kxlm awmh', // Your email password (use App Password for Gmail)
+            pass: 'hfnn pnlv xnva idbd', // Your email password (use App Password for Gmail)
         },
     });
 
