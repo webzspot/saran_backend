@@ -10,7 +10,7 @@ const postContact = async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // Replace with your email service (e.g., Gmail, Outlook)
         auth: {
-            user: 'sarancastle.com', // Your email address
+            user: 'sarancastle@gmail.com', // Your email address
             pass: 'hfnn pnlv xnva idbd', // Your email password (use App Password for Gmail)
         },
     });
