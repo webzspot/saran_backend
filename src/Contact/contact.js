@@ -10,7 +10,7 @@ const postContact = async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // Replace with your email service (e.g., Gmail, Outlook)
         auth: {
-            user: 'webzspotcorp@gmail.com', // Your email address
+            user: 'sarancastle.com', // Your email address
             pass: 'ygwk worm kxlm awmh', // Your email password (use App Password for Gmail)
         },
     });
@@ -65,18 +65,14 @@ const postContact = async (req, res) => {
                 <h2 style="text-align: center; color: #333;">Thank You for Contacting Us!</h2>
                 <hr style="border: 1px solid #ddd;">
                 <p style="color: #555; font-size: 16px;">
-                    Dear ${firstname} ${lastname},
+                    <strong>Dear ${firstname} ${lastname} </strong>,
                 </p>
                 <p style="color: #555; font-size: 16px;">
                     Thank you for reaching out to us. We have received your message and will get back to you shortly.
                 </p>
-                <div style="margin-bottom: 15px;">
-                    <strong style="color: #333;">Your Message:</strong>
-                    <p style="color: #555; font-size: 14px; white-space: pre-wrap;">${message}</p>
-                </div>
                 <p style="color: #555; font-size: 16px;">
-                    Best regards,<br>
-                    The Team
+                    <strong>Best regards,</strong><br>
+                    Saran Castle
                 </p>
                 <hr style="border: 1px solid #ddd;">
                 <p style="text-align: center; color: #777; font-size: 12px;">
