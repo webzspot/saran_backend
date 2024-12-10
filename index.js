@@ -4,7 +4,7 @@ const cors = require("cors")
 // app.use(express.json())
 app.use(cors())
 const router = require('./src/router')
-
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use(express.json({

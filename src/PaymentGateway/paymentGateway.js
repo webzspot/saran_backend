@@ -3,29 +3,32 @@ const prisma = require('../prisma')
 const crypto = require('crypto');
 
 
+
 // Razorpay instance
 const razorpay = new Razorpay({
     key_id: "rzp_test_qUePsQvwKUdYCu",
     key_secret: "zncIffQV4BBNSDBpfS2IKBy7",
 });
 
-// Route to create an order
 const postProductOrder = async (req, res) => {
     try {
-        // Get the file URLs from S3
-        const uploadedFiles = req.files.map((file) => file.location);
         const data = req.body;
+        const files = req.files; // Handle multiple files if necessary
+        const fileUrls = files.map(file => file.location); // Extract file URLs from S3
+
+        console.log("Uploaded file URLs:", fileUrls);
+        console.log("Order details:", data);
 
         // Create Razorpay order
         const order = await razorpay.orders.create({
-            amount: data.amount * 100, // Amount in paise
+            amount: data.totalPrice * 100, // Amount in paise
             currency: "INR",
         });
 
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 50);
 
-        // Store temporary order details
+        // Store temporary order details in the database
         await prisma.temporaryOrder.create({
             data: {
                 order_id: order.id,
@@ -44,17 +47,18 @@ const postProductOrder = async (req, res) => {
                 city: data.city,
                 state: data.state,
                 pincode: data.pincode,
-                photo: uploadedFiles,  // Save the S3 URLs of the uploaded files
+                photo: fileUrls, // Join multiple file URLs as a comma-separated string
                 expiresAt: expiresAt,
             },
         });
 
         res.status(200).json({ order });
     } catch (error) {
-        console.error("Error creating order:", error);
+        console.error("Error creating order:", error.message);
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 
 

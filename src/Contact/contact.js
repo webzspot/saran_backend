@@ -90,7 +90,7 @@ const postContact = async (req, res) => {
 
         // Send the "Thank You" email to the user
         await transporter.sendMail(thankYouMailOptions);
-
+        console.log("Thank You email sent successfully");
         console.log("Emails sent successfully");
         res.status(200).send({ message: 'Email sent successfully' });
     } catch (error) {

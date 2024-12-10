@@ -93,7 +93,7 @@ router.post('/verify-otp', authVerifyOtp)
 // router.post("/order-session",postSessionOrder)
 // router.post("/verify-session",postSessionVerify)
 
-router.post('/order',upload.array("photos", 14),postProductOrder)
+router.post('/order',upload.array('photos', 10),postProductOrder)
 router.post('/session',upload.array("photos", 14),postSessionOrder)
 router.post('/razorpay-webhook',razorpayWebhook)
 router.post('/contact',postContact)
