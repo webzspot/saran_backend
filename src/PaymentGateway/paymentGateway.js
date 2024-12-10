@@ -52,7 +52,7 @@ const postProductOrder = async (req, res) => {
             },
         });
 
-        res.status(200).json({ order });
+        res.status(200).json({ message:"Payment Successful" });
     } catch (error) {
         console.error("Error creating order:", error.message);
         res.status(500).json({ error: "Internal server error" });
