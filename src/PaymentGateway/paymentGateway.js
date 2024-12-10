@@ -47,7 +47,7 @@ const postProductOrder = async (req, res) => {
                 city: data.city,
                 state: data.state,
                 pincode: data.pincode,
-                photo: fileUrls.join(','), // Join multiple file URLs as a comma-separated string
+                photo: fileUrls, // Join multiple file URLs as a comma-separated string
                 expiresAt: expiresAt,
             },
         });
