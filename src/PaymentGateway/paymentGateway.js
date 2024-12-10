@@ -52,7 +52,7 @@ const postProductOrder = async (req, res) => {
             },
         });
 
-        res.status(200).json({ message:"Payment Successful" });
+        res.status(200).json({ order });
     } catch (error) {
         console.error("Error creating order:", error.message);
         res.status(500).json({ error: "Internal server error" });
@@ -96,7 +96,9 @@ const postSessionOrder = async (req, res) => {
         });
         console.log("Temporary session order created:", order.id);
 
-        res.status(200).json({ order });
+        res.status(200).json({ 
+            message:"Payment Successfull",
+            order });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ error: "Internal server error" });
