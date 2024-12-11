@@ -255,13 +255,13 @@ const razorpayWebhook = async (req, res) => {
 };
 
 const getProductOrder = async (req,res) =>{
-    const productOrders = await permanentOrder.findUnique()
+    const productOrders = await prisma.permanentOrder.findMany()
     res.status(200).json({
         productOrders
     })
 }
 const getSessionOrder = async (req,res) =>{
-    const sessionOrders = await permanentOrder.findUnique()
+    const sessionOrders = await prisma.permanentSessionOrder.findMany()
     res.status(200).json({
         sessionOrders
     })
