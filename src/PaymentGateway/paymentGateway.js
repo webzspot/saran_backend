@@ -27,7 +27,7 @@ const postProductOrder = async (req, res) => {
         });
 
         const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 50);
+        expiresAt.setMinutes(expiresAt.getMinutes() + 5);
 
         // Store temporary order details in the database
         await prisma.temporaryOrder.create({
