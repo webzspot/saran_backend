@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const prisma = require('../prisma')
 const crypto = require('crypto');
+const cron = require("node-cron");
 
 
 
@@ -60,16 +61,42 @@ const postProductOrder = async (req, res) => {
 };
 
 
+async function deleteExpiredOrders() {
+    try {
+        const now = new Date();
+        const result = await prisma.temporaryOrder.deleteMany({
+            where: {
+                expiresAt: {
+                    lte: now,
+                },
+            },
+        });
+        console.log(`${result.count} expired orders deleted successfully.`);
+    } catch (error) {
+        console.error("Error deleting expired orders:", error);
+    }
+}
+
+// Schedule the task to delete expired orders every day at 10 PM IST
+cron.schedule("30 16 * * *", () => {
+    console.log("Running the scheduled task to delete expired orders...");
+    deleteExpiredOrders();
+});
+//30 16
 
 
 
 const postSessionOrder = async (req, res) => {
     try {
         const data = req.body;
-        const uploadedFiles = req.files.map((file) => file.location);
+        const files = req.files; // Handle multiple files if necessary
+        const fileUrls = files.map(file => file.location); // Extract file URLs from S3
+
+        console.log("Uploaded file URLs:", fileUrls);
+        console.log("Order details:", data);
 
         const order = await razorpay.orders.create({
-            amount: data.amount * 100, // Amount in paise
+            amount: data.price * 100, // Amount in paise
             currency: "INR",
         });
 
@@ -81,7 +108,7 @@ const postSessionOrder = async (req, res) => {
                 kit_info: data.kit_info,
                 date: data.date,
                 time: data.time,
-                price: data.price,
+                price: (order.amount / 100).toString(),
                 name: data.name,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
@@ -91,7 +118,7 @@ const postSessionOrder = async (req, res) => {
                 city: data.city,
                 state: data.state,
                 pincode: data.pincode,
-                photo: uploadedFiles
+                photo: fileUrls
             },
         });
         console.log("Temporary session order created:", order.id);
@@ -104,8 +131,6 @@ const postSessionOrder = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
-
 
 
 const razorpayWebhook = async (req, res) => {
@@ -210,7 +235,7 @@ const razorpayWebhook = async (req, res) => {
                 }
 
                 console.log(`Payment captured and processed for order_id: ${orderId}`);
-                return res.status(200).json({ message: "Payment Verified" });
+                return res.status(200).json({ message: "Payment Successfull" });
             }
 
             case 'payment.failed': {
@@ -229,4 +254,16 @@ const razorpayWebhook = async (req, res) => {
     }
 };
 
-module.exports = { postProductOrder, postSessionOrder, razorpayWebhook }
+const getProductOrder = async (req,res) =>{
+    const productOrders = await permanentOrder.findUnique()
+    res.status(200).json({
+        productOrders
+    })
+}
+const getSessionOrder = async (req,res) =>{
+    const sessionOrders = await permanentOrder.findUnique()
+    res.status(200).json({
+        sessionOrders
+    })
+}
+module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getSessionOrder  }

@@ -12,7 +12,7 @@ const { postSession, getSession, postSessionDescription, getSessionById, postRev
     deleteReviewSession,sessionDelete, sessionUpdate } = require("../src/Session-package/session")
 const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
-const {postProductOrder,postSessionOrder,razorpayWebhook} = require('./PaymentGateway/paymentGateway')
+const {postProductOrder,postSessionOrder,razorpayWebhook,getProductOrder,getSessionOrder} = require('./PaymentGateway/paymentGateway')
 const {postContact} = require('./Contact/contact')
 
 
@@ -94,7 +94,10 @@ router.post('/verify-otp', authVerifyOtp)
 // router.post("/verify-session",postSessionVerify)
 
 router.post('/order',upload.array('photos', 10),postProductOrder)
-router.post('/session',upload.array("photos", 14),postSessionOrder)
+router.post('/session',upload.array("photos", 10),postSessionOrder)
+router.get('/session-orders',getProductOrder)
+router.get('/product-orders',getSessionOrder)
+
 router.post('/razorpay-webhook',razorpayWebhook)
 router.post('/contact',postContact)
 
