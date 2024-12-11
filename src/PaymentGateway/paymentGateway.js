@@ -260,10 +260,63 @@ const getProductOrder = async (req,res) =>{
         productOrders
     })
 }
+
+const getProductOrderById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const productOrders = await prisma.permanentOrder.findUnique({
+            where: {
+                permanent_id: id, // Convert id to an integer if it's numeric
+            },
+        });
+
+        if (!productOrders) {
+            return res.status(404).json({
+                message: "Product order not found",
+            });
+        }
+
+        res.status(200).json({
+            productOrders,
+        });
+    } catch (error) {
+        console.error("Error fetching product order by ID:", error);
+        res.status(500).json({
+            message: "An error occurred while fetching the product order",
+        });
+    }
+};
+const getSessionOrderById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const sessionOrders = await prisma.permanentSessionOrder.findUnique({
+            where: {
+                permanentSession_id: id, // Convert id to an integer if it's numeric
+            },
+        });
+
+        if (!sessionOrders) {
+            return res.status(404).json({
+                message: "Session order not found",
+            });
+        }
+
+        res.status(200).json({
+            sessionOrders,
+        });
+    } catch (error) {
+        console.error("Error fetching product order by ID:", error);
+        res.status(500).json({
+            message: "An error occurred while fetching the product order",
+        });
+    }
+};
+
+
 const getSessionOrder = async (req,res) =>{
     const sessionOrders = await prisma.permanentSessionOrder.findMany()
     res.status(200).json({
         sessionOrders
     })
 }
-module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getSessionOrder  }
+module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getProductOrderById ,getSessionOrder,getSessionOrderById  }
