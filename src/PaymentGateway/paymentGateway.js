@@ -37,6 +37,7 @@ const postProductOrder = async (req, res) => {
                 productName: data.productName,
                 size: data.size,
                 price: data.price,
+                kit_info:data.kit_info,
                 shipping_charges: data.shipping_charges,
                 totalPrice: (order.amount / 100).toString(),
                 name: data.name,
