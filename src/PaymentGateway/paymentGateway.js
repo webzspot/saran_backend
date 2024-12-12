@@ -105,6 +105,7 @@ const postSessionOrder = async (req, res) => {
             data: {
                 order_id: order.id,
                 sessionName: data.sessionName,
+                session_id:data.session_id,
                 kit_info: data.kit_info,
                 date: data.date,
                 time: data.time,
@@ -131,6 +132,26 @@ const postSessionOrder = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+const postCourse = async (req, res) => {
+    const data = req.body;
+    const addCourse = await prisma.Course.create({
+        data: {
+            course_name: data.course_name,
+            group_link: data.group_link,
+            session_id: data.session_id
+        }
+    })
+    res.status(200).json({
+        addCourse
+    })
+}
+const getCourse = async (req, res) => {
+    const addCourse = await prisma.Course.findMany()
+    res.status(200).json({
+        addCourse
+    })
+}
 
 
 const razorpayWebhook = async (req, res) => {
@@ -205,6 +226,7 @@ const razorpayWebhook = async (req, res) => {
                     await prisma.temporaryOrder.delete({
                         where: { order_id: orderId },
                     });
+
                 }
 
                 if (sessionDetails) {
@@ -213,6 +235,7 @@ const razorpayWebhook = async (req, res) => {
                             order_id: orderId,
                             payment_id:paymentId,
                             sessionName: sessionDetails.sessionName,
+                            session_id:sessionDetails.session_id,
                             kit_info: sessionDetails.kit_info,
                             date: sessionDetails.date,
                             time: sessionDetails.time,
@@ -229,13 +252,18 @@ const razorpayWebhook = async (req, res) => {
                             photo:sessionDetails.photo
                         },
                     });
+
+                   
+
                     await prisma.temporarySessionOrder.delete({
                         where: { order_id: orderId },
                     });
+                
                 }
 
                 console.log(`Payment captured and processed for order_id: ${orderId}`);
-                return res.status(200).json({ message: "Payment Successfull" });
+                return res.status(200).json({ message: "Payment Successfull",
+                 });
             }
 
             case 'payment.failed': {
@@ -253,6 +281,44 @@ const razorpayWebhook = async (req, res) => {
         return res.status(500).send('Internal server error');
     }
 };
+
+const link = async (req, res) => {
+    const data = req.body;
+  
+    try {
+      // Fetch the data from the database
+      const sessionOrder = await prisma.permanentSessionOrder.findUnique({
+        where: {
+          order_id: data.orderId,
+          session_id: data.session_id,
+          payment_id: data.payment_id
+        },
+        include: {
+          course: {
+            select: {
+              group_link: true // Include the group_link from the associated course
+            }
+          }
+        }
+      });
+      // Extract the group_link
+      const groupLink = sessionOrder.course.group_link;
+  
+      res.status(200).json({
+        message: "Link Shared Successfully",
+        groupLink: groupLink // Send the group link in the response
+      });
+  
+    } catch (error) {
+      console.error("Error fetching session order:", error);
+      res.status(500).json({
+        message: "An error occurred while fetching the session order",
+        error: error.message
+      });
+    }
+  };
+  
+
 
 const getProductOrder = async (req,res) =>{
     const productOrders = await prisma.permanentOrder.findMany()
@@ -319,4 +385,4 @@ const getSessionOrder = async (req,res) =>{
         sessionOrders
     })
 }
-module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getProductOrderById ,getSessionOrder,getSessionOrderById  }
+module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getProductOrderById ,getSessionOrder,getSessionOrderById ,postCourse,getCourse ,link }

@@ -6,14 +6,15 @@ const { postCategory, postSubCategory, postProduct, getAllProduct, deleteProduct
     getProductBySubCategoryId, postReview, getReviewByProductId,
     updateReviewApproveById, deleteSubcategoryById, deleteProductVariationById,
     postProductVariations, getProductVariations,
-    getReview,deleteReviewById,
+    getReview, deleteReviewById,
 } = require("./controller")
 const { postSession, getSession, postSessionDescription, getSessionById, postReviewSession, getReviewSession, updateReviewSession,
-    deleteReviewSession,sessionDelete, sessionUpdate } = require("../src/Session-package/session")
+    deleteReviewSession, sessionDelete, sessionUpdate } = require("../src/Session-package/session")
 const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
-const {postProductOrder,postSessionOrder,razorpayWebhook,getProductOrder,getSessionOrder,getProductOrderById,getSessionOrderById} = require('./PaymentGateway/paymentGateway')
-const {postContact} = require('./Contact/contact')
+const { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder, getSessionOrder, getProductOrderById, getSessionOrderById,postCourse ,getCourse,link} = require('./PaymentGateway/paymentGateway')
+const { postContact } = require('./Contact/contact')
+const prisma = require('./prisma')
 
 
 
@@ -30,11 +31,11 @@ router.put("/review/:id", updateReviewApproveById);
 
 router.post('/product-variations', upload.single('productVariation_image'), postProductVariations);
 
-router.get('/product-variations',  getProductVariations);
+router.get('/product-variations', getProductVariations);
 
-router.delete('/product-variations/:id',deleteProductVariationById);
+router.delete('/product-variations/:id', deleteProductVariationById);
 
-router.delete("/product/:id",deleteProductById);
+router.delete("/product/:id", deleteProductById);
 
 router.delete("/subcategory/:id", deleteSubcategoryById);
 
@@ -58,7 +59,7 @@ router.delete('/review/:id', deleteReviewById);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-router.post('/session',upload.single('session_image'), postSession)
+router.post('/session', upload.single('session_image'), postSession)
 router.get('/session', getSession)
 router.post('/session-description', postSessionDescription)
 router.get('/session/:id', getSessionById)
@@ -75,7 +76,7 @@ router.delete('/reviewsessions/:reviewSessionId', deleteReviewSession);
 
 router.delete('/session/:id', sessionDelete)
 
-router.put('/session/:id', upload.single("file"),sessionUpdate)
+router.put('/session/:id', upload.single("file"), sessionUpdate)
 
 router.post('/refresh', authRefresh)
 router.post('/login', authLogin)
@@ -93,15 +94,22 @@ router.post('/verify-otp', authVerifyOtp)
 // router.post("/order-session",postSessionOrder)
 // router.post("/verify-session",postSessionVerify)
 
-router.post('/order',upload.array('photos', 10),postProductOrder)
-router.post('/session',upload.array("photos", 10),postSessionOrder)
-router.get('/session-orders',getSessionOrder)
-router.get('/product-orders',getProductOrder)
+router.post('/order', upload.array('photos', 10), postProductOrder)
+router.post('/session', upload.array('photos', 10), postSessionOrder)
+router.get('/session-orders', getSessionOrder)
+router.get('/product-orders', getProductOrder)
 router.get('/product-orders/:id', getProductOrderById);
-router.get('/session-orders/id', getSessionOrderById);
+router.get('/session-orders/:id', getSessionOrderById);
 
-router.post('/razorpay-webhook',razorpayWebhook)
-router.post('/contact',postContact)
+router.post('/razorpay-webhook', razorpayWebhook)
+router.post('/contact', postContact)
+
+
+
+router.post('/create-course', postCourse)
+router.get('/create-course', getCourse)
+router.get('/link', link)
+
 
 
 

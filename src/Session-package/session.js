@@ -65,8 +65,8 @@ const getSession = async (req, res) => {
         const sessions = await prisma.session.findMany();
         res.json({
             data: {
-                sessions,
-            },
+                sessions,  
+            }
         });
     } catch (error) {
         res.json({
@@ -91,7 +91,8 @@ const getSessionById = async (req, res) => {
                 Reviewsession: {
                     where: { isApproved: true}
                 }
-            },
+            }
+            
         });
 
         res.status(200).json({
