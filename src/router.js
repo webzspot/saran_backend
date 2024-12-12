@@ -108,7 +108,7 @@ router.post('/contact', postContact)
 
 router.post('/create-course', postCourse)
 router.get('/create-course', getCourse)
-router.get('/link', link)
+router.post('/link', link)
 
 
 

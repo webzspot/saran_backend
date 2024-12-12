@@ -129,7 +129,8 @@ const postSessionOrder = async (req, res) => {
 
         res.status(200).json({ 
             message:"Payment Successfull",
-            order });
+            order,
+                 });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -285,7 +286,6 @@ const razorpayWebhook = async (req, res) => {
         return res.status(500).send('Internal server error');
     }
 };
-
 const link = async (req, res) => {
     const data = req.body;
   
@@ -293,26 +293,35 @@ const link = async (req, res) => {
       // Fetch the data from the database
       const sessionOrder = await prisma.permanentSessionOrder.findUnique({
         where: {
-          order_id: data.orderId,
-          session_id: data.session_id,
           payment_id: data.payment_id
         },
         include: {
-          course: {
-            select: {
-              group_link: true // Include the group_link from the associated course
+            session:{
+                select:{
+                    course: {
+                        select: {
+                          group_link: true // Include the group_link from the associated course
+                        }
+                      }
+                }
+                
             }
-          }
         }
       });
+  
+      if (!sessionOrder) {
+        return res.status(404).json({
+          message: "Session order not found"
+        });
+      }
+  
       // Extract the group_link
-      const groupLink = sessionOrder.course.group_link;
+      const groupLink = sessionOrder.session.course.group_link;
   
       res.status(200).json({
         message: "Link Shared Successfully",
         groupLink: groupLink // Send the group link in the response
       });
-  
     } catch (error) {
       console.error("Error fetching session order:", error);
       res.status(500).json({

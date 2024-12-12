@@ -95,6 +95,7 @@ model Session {
   session_platform   String
   session_kit        String
   course            Course?
+  permanentSessionOrder PermanentSessionOrder[]
   sessiondescription Sessiondescription?
   Reviewsession             Reviewsession[]
 }
@@ -202,7 +203,6 @@ model PermanentSessionOrder {
   order_id         String   @unique
   payment_id       String   @unique
   sessionName      String
-  session_id       String 
   platform         String
   kit_info         String
   date             String
@@ -219,6 +219,8 @@ model PermanentSessionOrder {
   pincode          String?
   photo            String[] 
   createdAt        DateTime @default(now())
+    session_id       String 
+   session     Session @relation(fields: [session_id], references: [session_id], onDelete: Cascade)
 }
 
 

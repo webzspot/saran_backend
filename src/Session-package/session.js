@@ -90,9 +90,15 @@ const getSessionById = async (req, res) => {
                 sessiondescription: true,
                 Reviewsession: {
                     where: { isApproved: true}
-                }
-            }
-            
+                },
+                    course: {
+                      select: {
+                        group_link: true // Include the group_link from the associated course
+                      }
+                    }
+                  
+            },
+
         });
 
         res.status(200).json({
