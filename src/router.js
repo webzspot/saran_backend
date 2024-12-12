@@ -95,7 +95,7 @@ router.post('/verify-otp', authVerifyOtp)
 // router.post("/verify-session",postSessionVerify)
 
 router.post('/order', upload.array('photos', 10), postProductOrder)
-router.post('/session', upload.array('photos', 1000), postSessionOrder)
+router.post('/session-payment', upload.array('photos', 1000),  postSessionOrder)
 router.get('/session-orders', getSessionOrder)
 router.get('/product-orders', getProductOrder)
 router.get('/product-orders/:id', getProductOrderById);
