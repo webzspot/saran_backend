@@ -14,7 +14,7 @@ const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
 const { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder, getSessionOrder, getProductOrderById, getSessionOrderById,postCourse ,getCourse,link} = require('./PaymentGateway/paymentGateway')
 const { postContact } = require('./Contact/contact')
-const prisma = require('./prisma')
+
 
 
 
@@ -95,7 +95,7 @@ router.post('/verify-otp', authVerifyOtp)
 // router.post("/verify-session",postSessionVerify)
 
 router.post('/order', upload.array('photos', 10), postProductOrder)
-router.post('/session', upload.array('photos', 10), postSessionOrder)
+router.post('/session', upload.array('photos', 1000), postSessionOrder)
 router.get('/session-orders', getSessionOrder)
 router.get('/product-orders', getProductOrder)
 router.get('/product-orders/:id', getProductOrderById);
