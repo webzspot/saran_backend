@@ -29,20 +29,5 @@ const upload = multer({
 });
 
 
-// const upload = multer({
-//   storage: multerS3({
-//     s3: s3Client,
-//     bucket:"amaljosen",
-//     acl: 'public-read',
-//     key: (req, file, cb) => {
-//       try {
-//         cb(null, `Dashboard/${Date.now()}_${file.originalname}`);
-//       } catch (err) {
-//         cb(err);
-//       }
-//     },
-//   }),
-//   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
-// });
 
 module.exports = upload;
