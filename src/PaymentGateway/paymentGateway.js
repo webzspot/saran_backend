@@ -14,6 +14,7 @@ const razorpay = new Razorpay({
 const postProductOrder = async (req, res) => {
     try {
         const data = req.body;
+        console.log(data)
         const files = req.files; // Handle multiple files if necessary
         const fileUrls = files.map(file => file.location); // Extract file URLs from S3
 

@@ -179,7 +179,7 @@ model TemporarySessionOrder {
   sessionName      String
   platform         String
   kit_info         String
-  session_id       String @unique
+  session_id       String 
   date             String
   time             String
   price            String
@@ -202,7 +202,7 @@ model PermanentSessionOrder {
   order_id         String   @unique
   payment_id       String   @unique
   sessionName      String
-  session_id       String @unique
+  session_id       String 
   platform         String
   kit_info         String
   date             String
