@@ -297,7 +297,7 @@ const link = async (req, res) => {
         },
         include: {
             session:{
-                select:{
+                include:{
                     course: {
                         select: {
                           group_link: true // Include the group_link from the associated course
