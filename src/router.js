@@ -12,7 +12,7 @@ const { postSession, getSession, postSessionDescription, getSessionById, postRev
     deleteReviewSession, sessionDelete, sessionUpdate } = require("../src/Session-package/session")
 const protectedRoute = require('./Authentication/protectedRoute')
 const { authRefresh, authLogin, authRegister, authForgetPassword, authVerifyOtp } = require('./Authentication/authentication')
-const { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder, getSessionOrder, getProductOrderById, getSessionOrderById,postCourse ,getCourse,link} = require('./PaymentGateway/paymentGateway')
+const { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder, getSessionOrder, getProductOrderById, getSessionOrderById,postCourse ,getCourse,link,updateMyOrders} = require('./PaymentGateway/paymentGateway')
 const { postContact } = require('./Contact/contact')
 
 
@@ -105,7 +105,7 @@ router.post('/razorpay-webhook', razorpayWebhook)
 router.post('/contact', postContact)
 
 
-
+router.post('/update-myorders',updateMyOrders)
 router.post('/create-course', postCourse)
 router.get('/create-course', getCourse)
 router.post('/link', link)

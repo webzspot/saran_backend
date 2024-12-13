@@ -91,11 +91,6 @@ const getSessionById = async (req, res) => {
                 Reviewsession: {
                     where: { isApproved: true}
                 },
-                    course: {
-                      select: {
-                        group_link: true // Include the group_link from the associated course
-                      }
-                    }
                   
             },
 
@@ -224,8 +219,10 @@ const postReviewSession = async (req, res) => {
             },
             include: {
                 sessiondescription: true,
+                course:true,
                 Reviewsession: {
                     where: { isApproved: true },
+                    
                 },
             },
         });

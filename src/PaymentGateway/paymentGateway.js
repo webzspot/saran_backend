@@ -2,6 +2,7 @@ const Razorpay = require("razorpay");
 const prisma = require('../prisma')
 const crypto = require('crypto');
 const cron = require("node-cron");
+const nodemailer = require('nodemailer');
 
 
 
@@ -38,7 +39,7 @@ const postProductOrder = async (req, res) => {
                 productName: data.productName,
                 size: data.size,
                 price: data.price,
-                kit_info:data.kit_info,
+                kit_info: data.kit_info,
                 shipping_charges: data.shipping_charges,
                 totalPrice: (order.amount / 100).toString(),
                 name: data.name,
@@ -107,13 +108,13 @@ const postSessionOrder = async (req, res) => {
             data: {
                 order_id: order.id,
                 sessionName: data.sessionName,
-                session_id:data.session_id,
+                session_id: data.session_id,
                 kit_info: data.kit_info,
                 date: data.date,
                 time: data.time,
                 price: (order.amount / 100).toString(),
                 name: data.name,
-                session_mode:data.session_mode,
+                session_mode: data.session_mode,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 address1: data.address1,
@@ -128,10 +129,10 @@ const postSessionOrder = async (req, res) => {
         });
         console.log("Temporary session order created:", order.id);
 
-        res.status(200).json({ 
-            message:"Payment Successfull",
+        res.status(200).json({
+            message: "Payment Successfull",
             order,
-                 });
+        });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -222,6 +223,7 @@ const razorpayWebhook = async (req, res) => {
                             address1: orderDetails.address1,
                             address2: orderDetails.address2,
                             landmark: orderDetails.landmark,
+                            status: "Order Placed",
                             city: orderDetails.city,
                             state: orderDetails.state,
                             pincode: orderDetails.pincode,
@@ -238,11 +240,11 @@ const razorpayWebhook = async (req, res) => {
                     await prisma.permanentSessionOrder.create({
                         data: {
                             order_id: orderId,
-                            payment_id:paymentId,
+                            payment_id: paymentId,
                             sessionName: sessionDetails.sessionName,
-                            session_id:sessionDetails.session_id,
+                            session_id: sessionDetails.session_id,
                             kit_info: sessionDetails.kit_info,
-                            session_mode:sessionDetails.session_mode,
+                            session_mode: sessionDetails.session_mode,
                             date: sessionDetails.date,
                             time: sessionDetails.time,
                             price: sessionDetails.price,
@@ -256,21 +258,22 @@ const razorpayWebhook = async (req, res) => {
                             city: sessionDetails.city,
                             state: sessionDetails.state,
                             pincode: sessionDetails.pincode,
-                            photo:sessionDetails.photo
+                            photo: sessionDetails.photo
                         },
                     });
 
-                   
+
 
                     await prisma.temporarySessionOrder.delete({
                         where: { order_id: orderId },
                     });
-                
+
                 }
 
                 console.log(`Payment captured and processed for order_id: ${orderId}`);
-                return res.status(200).json({ message: "Payment Successfull",
-                 });
+                return res.status(200).json({
+                    message: "Payment Successfull",
+                });
             }
 
             case 'payment.failed': {
@@ -288,54 +291,137 @@ const razorpayWebhook = async (req, res) => {
         return res.status(500).send('Internal server error');
     }
 };
+
+const updateMyOrders = async (req, res) => {
+    try {
+        const data = req.body;
+        
+        // Validate required fields
+        if (!data.payment_id || !data.status) {
+            return res.status(400).json({
+                message: "Payment ID and status are required."
+            });
+        }
+
+        const update = await prisma.permanentOrder.update({
+            where: {
+                payment_id: data.payment_id
+            },
+            data: {
+                status: data.status
+            }
+        });
+
+        res.json({
+            update,
+            message: "Your Status Is Updated Successfully"
+        });
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({
+            message: "An error occurred while updating the order status.",
+            error: error.message
+        });
+    }
+};
+
+
 const link = async (req, res) => {
     const data = req.body;
-  
+
     try {
-      // Fetch the data from the database
-      const sessionOrder = await prisma.permanentSessionOrder.findUnique({
-        where: {
-          payment_id: data.payment_id
-        },
-        include: {
-            session:{
-                include:{
-                    course: {
-                        select: {
-                          group_link: true // Include the group_link from the associated course
+        // Fetch the data from the database
+        const sessionOrder = await prisma.permanentSessionOrder.findUnique({
+            where: {
+                payment_id: data.payment_id
+            },
+            include: {
+                session: {
+                    include: {
+                        course: {
+                            select: {
+                                group_link: true // Include the group_link from the associated course
+                            }
                         }
-                      }
+                    }
+
                 }
-                
             }
-        }
-      });
-  
-      if (!sessionOrder) {
-        return res.status(404).json({
-          message: "Session order not found"
         });
-      }
-  
-      // Extract the group_link
-      const groupLink = sessionOrder.session.course.group_link;
-  
-      res.status(200).json({
-        message: "Link Shared Successfully",
-        groupLink: groupLink // Send the group link in the response
-      });
+
+        if (!sessionOrder) {
+            return res.status(404).json({
+                message: "Session order not found"
+            });
+        }
+
+        // Extract the group_link
+        const groupLink = sessionOrder.session.course.group_link;
+        const recipientEmail = sessionOrder.email;
+
+        if (!recipientEmail) {
+            return res.status(400).json({
+                message: "Recipient email address not found"
+            });
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail', // Use your email service provider
+            auth: {
+                user: 'sarancastle@gmail.com', // Replace with your email
+                pass: 'hfnn pnlv xnva idbd' // Replace with your email password or app password
+            }
+        });
+
+        const mailOptions = {
+            from: 'sarancastle@gmail.com', // Replace with your email
+            to: recipientEmail, // The recipient's email
+            subject: 'Your Class WhatsApp Group Link and Information',
+            html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.8; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+              <h2 style="color: #007BFF; text-align: center; margin-bottom: 20px;">Welcome to Your Class Group</h2>
+              <p>Dear Student,</p>
+              <p>We are delighted to have you as part of our class. To ensure seamless communication and timely updates, we have created a dedicated WhatsApp group. This group will serve as the central hub for sharing:</p>
+              <ul style="padding-left: 20px; margin-bottom: 20px;">
+                <li><strong>Meeting links</strong> for online classes</li>
+                <li><strong>Important announcements</strong> and updates</li>
+                <li><strong>Additional resources</strong> for both online and offline sessions</li>
+              </ul>
+              <p>We highly recommend you join the group using the link below:</p>
+              <p style="text-align: center; margin: 20px 0;">
+                <a href="${groupLink}" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Join WhatsApp Group</a>
+              </p>
+              <p>If you encounter any issues or have any questions, please feel free to contact us at any time. Our team is here to assist you.</p>
+              <p style="margin-top: 20px;">Thank you for choosing us. We look forward to supporting you in your learning journey.</p>
+              <p>Best regards,</p>
+              <p><strong>Saran Castle Team</strong></p>
+              <div style="margin-top: 30px; font-size: 12px; color: #555; border-top: 1px solid #ddd; padding-top: 10px;">
+                <p style="text-align: center;">This email was sent to you by Saran Castle Team. Please do not reply directly to this email. For assistance, contact us at <a href="mailto:sarancastle@gmail.com" style="color: #007BFF;">sarancastle@gmail.com.com</a>.</p>
+              </div>/
+            </div>
+          `
+
+
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({
+            message: "Link Shared Successfully",
+            groupLink: groupLink // Send the group link in the response
+        });
     } catch (error) {
-      console.error("Error fetching session order:", error);
-      res.status(500).json({
-        message: "An error occurred while fetching the session order",
-        error: error.message
-      });
+        console.error("Error fetching session order:", error);
+        res.status(500).json({
+            message: "An error occurred while fetching the session order",
+            error: error.message
+        });
     }
-  };
-  
+};
 
 
-const getProductOrder = async (req,res) =>{
+
+const getProductOrder = async (req, res) => {
     const productOrders = await prisma.permanentOrder.findMany()
     res.status(200).json({
         productOrders
@@ -394,10 +480,10 @@ const getSessionOrderById = async (req, res) => {
 };
 
 
-const getSessionOrder = async (req,res) =>{
+const getSessionOrder = async (req, res) => {
     const sessionOrders = await prisma.permanentSessionOrder.findMany()
     res.status(200).json({
         sessionOrders
     })
 }
-module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder,getProductOrderById ,getSessionOrder,getSessionOrderById ,postCourse,getCourse ,link }
+module.exports = { postProductOrder, postSessionOrder, razorpayWebhook, getProductOrder, getProductOrderById, getSessionOrder, getSessionOrderById, postCourse, getCourse, link , updateMyOrders}
