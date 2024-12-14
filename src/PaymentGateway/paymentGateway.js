@@ -67,17 +67,32 @@ const postProductOrder = async (req, res) => {
 async function deleteExpiredOrders() {
     try {
         const now = new Date();
-        const result = await prisma.temporaryOrder.deleteMany({
+        
+        // Delete expired temporary orders
+        const tempOrderResult = await prisma.temporaryOrder.deleteMany({
             where: {
                 expiresAt: {
                     lte: now,
                 },
             },
         });
-        console.log(`${result.count} expired orders deleted successfully.`);
+        
+        console.log(`${tempOrderResult.count} expired temporary orders deleted successfully.`);
+        
+        // Delete expired temporary session orders
+        const tempSessionOrderResult = await prisma.temporarySessionOrder.deleteMany({
+            where: {
+                expiresAt: {
+                    lte: now,
+                },
+            },
+        });
+        
+        console.log(`${tempSessionOrderResult.count} expired temporary session orders deleted successfully.`);
     } catch (error) {
         console.error("Error deleting expired orders:", error);
     }
+    
 }
 
 // Schedule the task to delete expired orders every day at 10 PM IST
@@ -103,6 +118,9 @@ const postSessionOrder = async (req, res) => {
             currency: "INR",
         });
 
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 5);
+
         // Store temporary order details
         await prisma.temporarySessionOrder.create({
             data: {
@@ -124,7 +142,9 @@ const postSessionOrder = async (req, res) => {
                 city: data.city,
                 state: data.state,
                 pincode: data.pincode,
-                photo: fileUrls
+                photo: fileUrls,
+                expiresAt: expiresAt,
+
             },
         });
         console.log("Temporary session order created:", order.id);
@@ -292,17 +312,32 @@ const razorpayWebhook = async (req, res) => {
     }
 };
 
+
+
 const updateMyOrders = async (req, res) => {
     try {
         const data = req.body;
-        
-        // Validate required fields
-        if (!data.payment_id || !data.status) {
-            return res.status(400).json({
-                message: "Payment ID and status are required."
+   
+
+        const order = await prisma.permanentOrder.findUnique({
+            where: {
+                payment_id: data.payment_id
+            },
+            select: {
+                email: true,
+                productName:true,
+                name:true ,
+                order_id:true// Assuming "email" is a field in the permanentOrder table
+            }
+        });
+
+        if (!order || !order.email) {
+            return res.status(404).json({
+                message: "Order not found or email not available."
             });
         }
 
+        // Update the status
         const update = await prisma.permanentOrder.update({
             where: {
                 payment_id: data.payment_id
@@ -312,9 +347,70 @@ const updateMyOrders = async (req, res) => {
             }
         });
 
+        // Send an email notification
+        const transporter = nodemailer.createTransport({
+            service: 'gmail', // e.g., 'gmail'
+            auth: {
+                user: 'sarancastle@gmail.com',
+                pass: 'hfnn pnlv xnva idbd'
+            }
+        });
+
+        const mailOptions = {
+            from: 'sarancastle@gmail.com',
+            to: order.email,
+            subject: 'Order Status Updated',
+            html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #5e9ca0;">Order Status Updated</h2>
+            <p>Dear ${order.name},</p>
+            <p>Your order status has been updated to: <strong>${data.status}</strong>.</p>
+            <p>Order ID: <strong>${order.order_id}</strong></p>
+            <p>Here are the details of your order:</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Product Name</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.productName}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${data.status}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Thank you for choosing Saran Castle. We appreciate your trust in our products and look forward to serving you again.</p>
+            <a href="https://www.sarancastle.com/shop" 
+               style="display: inline-block; padding: 10px 15px; background-color: #5e9ca0; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+               Continue Shopping
+            </a>
+            <p style="margin-top: 20px;">Best regards,</p>
+            <p><strong>Saran Castle Team</strong></p>
+            <div style="margin-top: 30px; font-size: 12px; color: #555; border-top: 1px solid #ddd; padding-top: 10px;">
+                <p style="text-align: center;">This email was sent to you by Saran Castle Team. Please do not reply directly to this email. For assistance, contact us at <a href="mailto:sarancastle@gmail.com" style="color: #007BFF;">sarancastle@gmail.com</a>.</p>
+                <p style="text-align: center;">Visit our website at <a href="https://www.sarancastle.com" style="color: #007BFF;">www.sarancastle.com</a>.</p>
+            </div>
+        </div>
+    `
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.error("Error sending email:", err);
+                return res.status(500).json({
+                    message: "Order updated but email failed to send.",
+                    error: err.message
+                });
+            }
+
+            console.log("Email sent successfully:", info.response);
+        });
+
         res.json({
             update,
-            message: "Your Status Is Updated Successfully"
+            message: "Your status is updated successfully, and an email has been sent."
         });
     } catch (error) {
         console.error("Error updating order status:", error);
@@ -324,6 +420,7 @@ const updateMyOrders = async (req, res) => {
         });
     }
 };
+
 
 
 const link = async (req, res) => {

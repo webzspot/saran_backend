@@ -196,6 +196,7 @@ model TemporarySessionOrder {
   state            String?
   pincode          String?
   photo            String[] 
+  expiresAt        DateTime
   createdAt        DateTime @default(now())
 }
 
