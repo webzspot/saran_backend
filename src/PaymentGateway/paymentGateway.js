@@ -494,7 +494,7 @@ const link = async (req, res) => {
               <p><strong>Saran Castle Team</strong></p>
               <div style="margin-top: 30px; font-size: 12px; color: #555; border-top: 1px solid #ddd; padding-top: 10px;">
                 <p style="text-align: center;">This email was sent to you by Saran Castle Team. Please do not reply directly to this email. For assistance, contact us at <a href="mailto:sarancastle@gmail.com" style="color: #007BFF;">sarancastle@gmail.com.com</a>.</p>
-              </div>/
+              </div>
             </div>
           `
 
